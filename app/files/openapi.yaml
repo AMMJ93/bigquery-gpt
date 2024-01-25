@@ -55,12 +55,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  schema:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DatasetField'
+                $ref: '#/components/schemas/DatasetField'
         '404':
           description: Dataset not found
         '400':
