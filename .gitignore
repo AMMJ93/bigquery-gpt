@@ -1,0 +1,5 @@
+service_account.json
+ai-plugin.json
+.venv
+docker-compose.yml
+gpt_bigquery.egg-info

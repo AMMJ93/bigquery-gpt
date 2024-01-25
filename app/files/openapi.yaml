@@ -1,0 +1,155 @@
+openapi: 3.0.0
+info:
+  title: BigQuery Schema Retrieval API
+  version: 1.0.0
+servers:
+  - url: https://bigquery-gpt.assiljwair.nl
+paths:
+  /get-table-schema:
+    post:
+      summary: Retrieve BigQuery Table Schema
+      description: Retrieves the schema of a specified BigQuery table.
+      operationId: getTableSchema
+      tags:
+        - BigQuery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TableInfo'
+      responses:
+        '200':
+          description: Successfully retrieved the table schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  schema:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SchemaField'
+        '404':
+          description: Table not found
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized access
+  /get-dataset:
+    post:
+      summary: Retrieve BigQuery Dataset information
+      description: Retrieves information about a specified BigQuery Dataset.
+      operationId: getDataset
+      tags:
+        - BigQuery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetInfo'
+      responses:
+        '200':
+          description: Successfully retrieved the dataset information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  schema:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SchemaField'
+        '404':
+          description: Dataset not found
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized access
+components:
+  schemas:
+    TableInfo:
+      type: object
+      properties:
+        project:
+          type: string
+          description: Google Cloud Project ID
+        dataset_id:
+          type: string
+          description: BigQuery Dataset ID
+        table_id:
+          type: string
+          description: BigQuery Table ID
+      required:
+        - project
+        - dataset_id
+        - table_id
+    DatasetInfo:
+      type: object
+      properties:
+        project:
+          type: string
+          description: Google Cloud Project ID
+        dataset_id:
+          type: string
+          description: BigQuery Dataset ID
+      required:
+        - project
+        - dataset_id
+    SchemaField:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the field
+        type:
+          type: string
+          description: Data type of the field
+        mode:
+          type: string
+          description: Mode of the field (NULLABLE, REQUIRED, REPEATED)
+    DatasetField:
+      type: object
+      properties:
+        dataset_description:
+          type: string
+          nullable: true
+          description: Description of the dataset
+        dataset_labels:
+          type: object
+          description: Labels of the dataset
+          additionalProperties:
+            type: string
+        tables:
+          type: array
+          description: Tables in the dataset
+          items:
+            $ref: '#/components/schemas/TableObject'
+    TableObject:
+      type: object
+      properties:
+        _properties:
+          $ref: '#/components/schemas/TableProperties'
+    TableProperties:
+      type: object
+      properties:
+        kind:
+          type: string
+        id:
+          type: string
+        tableReference:
+          $ref: '#/components/schemas/TableReference'
+        type:
+          type: string
+        creationTime:
+          type: string
+    TableReference:
+      type: object
+      properties:
+        projectId:
+          type: string
+        datasetId:
+          type: string
+        tableId:
+          type: string

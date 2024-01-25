@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+  bigquery-gpt:
+    build: .
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-service-account.json
+      - API_PROJECT_ID=23432423432
+      - API_SECRET_ID=API_KEY_GPT
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.auth.forward.address="
+      - "traefik.frontend.headers.SSLHost=assiljwair.nl"
+      - "traefik.frontend.headers.SSLRedirect=true"
+      - "traefik.frontend.headers.STSIncludeSubdomains=true"
+      - "traefik.frontend.headers.STSPreload=true"
+      - "traefik.frontend.headers.STSSeconds=315360000"
+      - "traefik.frontend.headers.browserXSSFilter=true"
+      - "traefik.frontend.headers.contentTypeNosniff=true"
+      - "traefik.frontend.headers.forceSTSHeader=true"
+      - "traefik.frontend.headers.customResponseHeaders=X-Robots-Tag:noindex,nofollow,nosnippet,noarchive,notranslate,noimageindex"
+      - "traefik.frontend.rule=Host:bigquery-gpt.assiljwair.nl"
+      - "traefik.port=80"
+    volumes:
+      - /opt/appdata/bigquery-gpt/service_account.json:/app/gcp-service-account.json
+    networks:
+      - gpt_network
+
+networks:
+  gpt_network:
+    external: true
